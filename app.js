@@ -1,16 +1,26 @@
+require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const app = express();
-const conn = require("./db");
+const router = new express.Router();
 
-conn.query("SELECT name, email_address, cohort FROM amberapp1.students;", (err, results) => {
-	if (err) throw err.toString();
-	prettyPrint("Students Info", results);
-});
+const studentsRoute = require("./routes/students");
+const trainersRoute = require("./routes/trainers");
 
-const searchQuery = "King";
-conn.query(`SELECT name,username,email_address,address_line1,address_line2,mailing_address1 FROM amberapp1.students WHERE mailing_address1 LIKE '%${searchQuery}%';`, (err, results) => {
-	if (err) throw err.toString();
-	prettyPrint("Search Query", results);
+const APP_PORT = process.env.APP_PORT;
+
+app.set("view engine", "ejs");
+app.use(cors(["*"]));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/students", studentsRoute);
+app.use("/trainers", trainersRoute);
+
+app.listen(APP_PORT, () => {
+	console.log();
+	console.log(`APP LISTENING ON http://localhost:${APP_PORT}`);
+	console.log();
 });
 
 const prettyPrint = (title, results) => {
