@@ -1,34 +1,28 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const app = express();
-const router = new express.Router();
+const express = require('express')
+const app = express()
+const path = require('path')
+const expressLayout = require('express-ejs-layouts')
 
-const studentsRoute = require("./routes/students");
-const trainersRoute = require("./routes/trainers");
+require('dotenv').config()
 
-const APP_PORT = process.env.APP_PORT;
+const indexRoute = require('./routes/index')
+const studentsRoute = require('./routes/students')
+const trainersRoute = require('./routes/trainers')
 
-app.set("view engine", "ejs");
-app.use(cors(["*"]));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.set('view engine', 'ejs')
+app.set('layout', 'layouts/layout')
+app.use(expressLayout)
+app.use(express.static('public'))
+app.use(require('cors')(['*']))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
-app.use("/students", studentsRoute);
-app.use("/trainers", trainersRoute);
+app.use('/', indexRoute)
+app.use('/students', studentsRoute)
+app.use('/trainers', trainersRoute)
 
-app.listen(APP_PORT, () => {
-	console.log();
-	console.log(`APP LISTENING ON http://localhost:${APP_PORT}`);
-	console.log();
-});
-
-const prettyPrint = (title, results) => {
-	if (title) {
-		console.log("\n\n\n");
-		console.log("================================================================");
-		console.log("\t\t\t", title);
-		console.log("================================================================");
-	}
-	console.table(results);
-};
+app.listen(process.env.APP_PORT || 8080, () => {
+	console.log()
+	console.log(`APP LISTENING ON » http://localhost:${process.env.APP_PORT}`)
+	console.log()
+})
