@@ -8,9 +8,6 @@ window.onload = () => {
 			const currentTrainerName = deleteButton.parentElement.parentElement.querySelectorAll('td')[2].textContent.trim()
 			const trainerID = Number(deleteButton.parentElement.parentElement.querySelector('td').textContent.trim())
 
-			console.log(currentTrainerName)
-			console.log(trainerID)
-
 			Swal.fire({
 				title: `Do you want to delete ${currentTrainerName}?`,
 				showCancelButton: true,
@@ -20,7 +17,6 @@ window.onload = () => {
 					await fetch(`${baseUrl}/trainers/delete/${trainerID}`, { method: 'DELETE' })
 						.then((resp) => resp.json())
 						.then((resp) => {
-							console.log(resp)
 							if (resp.message == 'success') {
 								Swal.fire({
 									toast: true,
